@@ -1,11 +1,15 @@
-//dotenv...to secure you database
-require('dotenv').config();
 require('express-async-errors');
 const express = require('express');
 const app = express();
 
 //importing routes
 const taskRoutes = require('./routes/tasks')
+
+//importing connectDB
+const connectDB = require('./db/connect')
+
+//dotenv...to Run URL at file_connect.js in folder_db
+require('dotenv').config();
 
 //middleware...to use req.body
 app.use(express.json());
@@ -18,6 +22,7 @@ app.use(express.static('./public/'))
 const notFoundMiddleware = require('./middleware/not-found');
 // incase of...There are an error
 const errorHandlerMiddleware = require('./middleware/error-handler');
+
 
 // extra packages
 
@@ -37,6 +42,7 @@ const port = process.env.PORT || 1000;
 
 const start = async () => {
   try {
+    await connectDB(process.env.MONGO_URI)
     app.listen(port, () =>
       console.log(`Server is listening on port ${port}...`)
     );
